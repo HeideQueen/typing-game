@@ -33,6 +33,15 @@ const difficultySelect = document.getElementById('difficulty');
   // init time
   let time = 10;
 
+  // init difficulty
+  let difficulty =
+    localStorage.getItem('difficulty') !== null
+      ? localStorage.getItem('difficulty')
+      : 'medium';
+
+  // set difficulty
+  difficultySelect.value = difficulty;
+
   // focus on text on start
   text.focus();
 
@@ -83,6 +92,7 @@ const difficultySelect = document.getElementById('difficulty');
   addWordToDOM();
 
   // Event listeners
+  // Typing
   text.addEventListener('input', (e) => {
     const insertedText = e.target.value;
 
@@ -93,18 +103,24 @@ const difficultySelect = document.getElementById('difficulty');
       // clear
       e.target.value = '';
 
-      const difficulty = difficultySelect.value;
-
-      console.log(difficulty);
-
-      switch (difficulty) {
-        case 'easy':
-          time += 5;
-        case 'medium':
-          time += 3;
-        case 'hard':
-          time += 2;
+      if (difficulty === 'hard') {
+        time += 2;
+      } else if (difficulty === 'medium') {
+        time += 3;
+      } else {
+        time += 5;
       }
     }
+  });
+
+  // Settings btn click
+  settingsBtn.addEventListener('click', () => {
+    settings.classList.toggle('hide');
+  });
+
+  // Settings select
+  settingsForm.addEventListener('change', (e) => {
+    difficulty = e.target.value;
+    localStorage.setItem('difficulty', difficulty);
   });
 })();
