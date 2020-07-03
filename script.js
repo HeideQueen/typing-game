@@ -2,7 +2,7 @@ const word = document.getElementById('word');
 const text = document.getElementById('text');
 const scoreEl = document.getElementById('score');
 const timeEl = document.getElementById('time');
-const endgameEl = document.getElementById('end-game');
+const endgameEl = document.getElementById('end-game-container');
 const settingsBtn = document.getElementById('settings-btn');
 const settings = document.getElementById('settings');
 const settingsForm = document.getElementById('settings-form');
@@ -33,6 +33,12 @@ const difficultySelect = document.getElementById('difficulty');
   // init time
   let time = 10;
 
+  // focus on text on start
+  text.focus();
+
+  // start counting down
+  const timeInterval = setInterval(updateTime, 1000);
+
   // get random word
   function getRandomWord() {
     return words[Math.floor(Math.random() * words.length)];
@@ -50,6 +56,30 @@ const difficultySelect = document.getElementById('difficulty');
     scoreEl.innerHTML = score;
   }
 
+  // update time
+  function updateTime() {
+    time--;
+    timeEl.innerHTML = time + 's';
+
+    if (time === 0) {
+      clearInterval(timeInterval);
+
+      // end game
+      gameOver();
+    }
+  }
+
+  // game over show end screen
+  function gameOver() {
+    endgameEl.innerHTML = `
+      <h1>Time ran out</h1>
+      <p>Your final score is: ${score}</p>
+      <button onclick='location.reload()'>Play again?</button>
+    `;
+
+    endgameEl.style.display = 'flex';
+  }
+
   addWordToDOM();
 
   // Event listeners
@@ -62,6 +92,19 @@ const difficultySelect = document.getElementById('difficulty');
 
       // clear
       e.target.value = '';
+
+      const difficulty = difficultySelect.value;
+
+      console.log(difficulty);
+
+      switch (difficulty) {
+        case 'easy':
+          time += 5;
+        case 'medium':
+          time += 3;
+        case 'hard':
+          time += 2;
+      }
     }
   });
 })();
